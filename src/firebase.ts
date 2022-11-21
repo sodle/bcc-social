@@ -35,7 +35,8 @@ export async function signInWithGoogle() {
             uid: user.uid,
             name: user.displayName,
             authProvider: "google",
-            email: user.email
+            email: user.email,
+            verified: user.emailVerified
         });
     } catch (err) {
         console.error(err);

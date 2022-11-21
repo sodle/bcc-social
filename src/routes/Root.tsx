@@ -2,6 +2,9 @@ import React from 'react';
 
 import {auth, signInWithGoogle} from "../firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
+import {Link} from "react-router-dom";
+import Composer from "../components/Composer";
+import Feed from "../components/Feed";
 
 export default function Root() {
     const [user, loading, error] = useAuthState(auth);
@@ -9,7 +12,11 @@ export default function Root() {
     if (loading) {
         return <div>Loading...</div>;
     } else if (user) {
-        return <div>Hello, {user.displayName}!</div>;
+        return <>
+            <div>Hello, {user.displayName} ({user.email}{user.emailVerified ? " ✅" : ""})! <Link to="/logout">Log Out</Link></div>
+            <Composer />
+            <Feed />
+        </>;
     } else if (error) {
         console.error(error);
         return <div>Error! {error.message}</div>;
