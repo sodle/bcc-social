@@ -13,7 +13,7 @@ export default function Root() {
         return <div>Loading...</div>;
     } else if (user) {
         return <>
-            <div>Hello, {user.displayName} ({user.email}{user.emailVerified ? " ✅" : ""})! <Link to="/logout">Log Out</Link></div>
+            <div>Hello, <strong>{user.displayName} ({user.email}{user.emailVerified ? " ✅" : ""})</strong>! <Link to="/logout">Log Out</Link></div>
             <Composer />
             <Feed />
         </>;

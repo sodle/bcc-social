@@ -58,8 +58,8 @@ export default function Feed() {
             <h2>Your posts today</h2>
             {snapshot.docs.map(p => (
                 <div key={p.id} style={{whiteSpace: 'pre-line'}}>
-                    <p>{user.displayName} ({user.email}{user.emailVerified ? " ✅" : ""})</p>
-                    <p>{p.data().createDate.toDate().toLocaleString()}</p>
+                    <hr />
+                    <p><strong>{user.displayName} ({user.email}{user.emailVerified ? " ✅" : ""}) &bull; {p.data().createDate.toDate().toLocaleString()}</strong></p>
                     <p>{p.data().content}</p>
                 </div>
             ))}
