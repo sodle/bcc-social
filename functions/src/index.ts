@@ -11,15 +11,11 @@ export const generateDaily = functions.pubsub.schedule("00 00 * * *")
     .onRun(async (context) => {
       console.log(context.eventId);
 
-      const midnightYesterday = new Date();
-      midnightYesterday.setUTCHours(0);
-      midnightYesterday.setUTCMinutes(0);
-      midnightYesterday.setUTCSeconds(0);
-      midnightYesterday.setUTCMilliseconds(0);
-      midnightYesterday.setUTCDate(midnightYesterday.getUTCDate() - 1);
+      const yesterday = new Date();
+      yesterday.setHours(yesterday.getHours() - 24, 0, 0, 0);
 
       const query = getFirestore().collection("posts")
-          .where("createDate", ">=", midnightYesterday)
+          .where("createDate", ">=", yesterday)
           .orderBy("createDate", "desc");
 
       const posts = await query.get();
