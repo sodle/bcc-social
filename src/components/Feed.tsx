@@ -1,19 +1,24 @@
 import React from "react";
 import {useCollection} from "react-firebase-hooks/firestore";
+import {useIdToken} from "react-firebase-hooks/auth";
 
 import {collection, query, where, orderBy} from "firebase/firestore";
 
+import {DateTime} from "luxon";
+
 import {auth, db} from "../firebase";
-import {useIdToken} from "react-firebase-hooks/auth";
 
 const postsCollection = collection(db, "posts");
 
 export default function Feed() {
-    let midnight = new Date();
-    midnight.setUTCHours(0);
-    midnight.setUTCMinutes(0);
-    midnight.setUTCSeconds(0);
-    midnight.setUTCMilliseconds(0);
+    let midnight = DateTime.fromObject(
+        {}, {zone: "America/Los_Angeles"}
+    ).set({
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0
+    });
 
     const [user, userLoading, userError] = useIdToken(auth);
     const userId = user ? user.uid : "nil";
@@ -22,7 +27,7 @@ export default function Feed() {
         postsCollection,
         orderBy("createDate", "desc"),
         where("authorUid", "==", userId),
-        where("createDate", ">=", midnight)
+        where("createDate", ">=", midnight.toJSDate())
     );
     const [snapshot, dbLoading, dbError] = useCollection(postQuery, {
         snapshotListenOptions: {
