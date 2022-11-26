@@ -1,16 +1,6 @@
-import { initializeApp } from "firebase/app";
-import {
-  GoogleAuthProvider,
-  getAuth,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
-import {
-  getFirestore,
-  doc,
-  setDoc
-} from "firebase/firestore";
-
+import {initializeApp} from "firebase/app";
+import {getAuth, GoogleAuthProvider, signInWithPopup, User,} from "firebase/auth";
+import {doc, getFirestore, setDoc} from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA5nhiA8arU71un6pwWYD0WITdqm4bQa6Y",
@@ -44,6 +34,9 @@ export async function signInWithGoogle() {
     }
 }
 
-export async function logout() {
-    await signOut(auth);
+export function mentionUser(user: User): string {
+    let emailRendered = user.emailVerified ?
+        `(${user.email} ✅)` :
+        `(${user.email})`;
+    return `${user.displayName} ${emailRendered}`;
 }

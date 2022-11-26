@@ -2,11 +2,13 @@ import React from "react";
 import {useCollection} from "react-firebase-hooks/firestore";
 import {useIdToken} from "react-firebase-hooks/auth";
 
-import {collection, query, where, orderBy} from "firebase/firestore";
+import {collection, orderBy, query, where} from "firebase/firestore";
 
 import {DateTime} from "luxon";
 
 import {auth, db} from "../firebase";
+import {Post} from "./Post";
+import {Alert, Card, CardBody, Col} from "reactstrap";
 
 const postsCollection = collection(db, "posts");
 
@@ -50,24 +52,22 @@ export default function Feed() {
         return <div>Database Error: {dbError.message}</div>
     }
 
-    if (!snapshot || snapshot.docs.length === 0) {
-        return (
-            <div>
-                <h2>You haven't posted today!</h2>
-            </div>
-        );
-    }
-
     return (
-        <div>
-            <h2>Your posts today</h2>
-            {snapshot.docs.map(p => (
-                <div key={p.id} style={{whiteSpace: 'pre-line'}}>
-                    <hr />
-                    <p><strong>{user.displayName} ({user.email}{user.emailVerified ? " ✅" : ""}) &bull; {p.data().createDate.toDate().toLocaleString()}</strong></p>
-                    <p>{p.data().content}</p>
-                </div>
-            ))}
-        </div>
+        <Col md={9}>
+            <h2>Your Outbox</h2>
+            <Alert color="info">
+                Posts you share today will be shared with everyone else who posted today.
+            </Alert>
+            {(!snapshot || snapshot.docs.length === 0) ?
+                <Card>
+                    <CardBody>
+                        You haven't posted yet today!
+                    </CardBody>
+                </Card> :
+                snapshot.docs.map(p => (
+                    <Post key={p.id} user={user} p={p}/>
+                ))
+            }
+        </Col>
     )
 }

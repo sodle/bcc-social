@@ -3,6 +3,7 @@ import {collection, addDoc} from 'firebase/firestore';
 
 import {auth, db} from "../firebase";
 import {useIdToken} from "react-firebase-hooks/auth";
+import {Button, Col, Form, FormGroup, Input, Label} from "reactstrap";
 
 const postsCollection = collection(db, "posts")
 
@@ -21,28 +22,39 @@ export default function Composer() {
         return <div>Not logged in!</div>
     }
 
-    return (
-        <div>
-            <h2><label htmlFor="composer">Write a post!</label></h2>
-            <div><textarea id="composer" value={postText} rows={5} cols={50} onChange={e => setPostText(e.target.value)} /></div>
-            <div><button onClick={() => {
-                const post = postText.trim()
-                if (post.length === 0) {
-                    alert("Your post is empty!");
-                } else {
-                    addDoc(postsCollection, {
-                        authorUid: user.uid,
-                        createDate: new Date(),
-                        content: post
-                    }).then(p => {
-                        console.log(`Created post ${p.id}.`);
-                        setPostText("");
-                    }).catch(e => {
-                        console.error(e);
-                        alert(`Error: ${e.message}`);
-                    });
-                }
-            }}>Post</button></div>
-        </div>
-    );
+    function post() {
+        const post = postText.trim()
+        if (post.length === 0) {
+            alert("Your post is empty!");
+        } else if (!user) {
+            alert("You are not logged in!")
+        } else {
+            addDoc(postsCollection, {
+                authorUid: user.uid,
+                createDate: new Date(),
+                content: post
+            }).then(p => {
+                console.log(`Created post ${p.id}.`);
+                setPostText("");
+            }).catch(e => {
+                console.error(e);
+                alert(`Error: ${e.message}`);
+            });
+        }
+    }
+
+    return <Col md="3">
+        <Form>
+            <FormGroup>
+                <h2>
+                    <Label for="composer">Write a post!</Label>
+                </h2>
+                <Input id="composer" type="textarea" rows={10}
+                       value={postText} onChange={e => setPostText(e.target.value)} />
+            </FormGroup>
+            <Button block color="success" onClick={post}>
+                Post
+            </Button>
+        </Form>
+    </Col>;
 }
