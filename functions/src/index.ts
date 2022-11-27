@@ -1,4 +1,6 @@
 import * as functions from "firebase-functions";
+import {defineSecret} from "firebase-functions/params";
+
 import {initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {getAuth} from "firebase-admin/auth";
@@ -6,6 +8,8 @@ import {getAuth} from "firebase-admin/auth";
 import * as sgMail from "@sendgrid/mail";
 
 initializeApp();
+
+const sendgridSecret = defineSecret("SENDGRID_API_KEY");
 
 export const generateDaily = functions.pubsub.schedule("00 00 * * *")
     .onRun(async (context) => {
@@ -44,8 +48,7 @@ Here's your BCCs, yo!\n\n
 ${postBlurbs.join("\n\n")}
       `;
 
-      sgMail.setApiKey("SG.jiHCxjQiQvyPl-NrpcBwRA." +
-          "xbDDCj0ymmAe0qhlwQO7CrECApG73xgBy69-9M_pYww");
+      sgMail.setApiKey(sendgridSecret.value());
       for (const authorEmail of authorEmails) {
         await sgMail.send({
           to: authorEmail,
