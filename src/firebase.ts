@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app";
-import {getAuth, GoogleAuthProvider, signInWithPopup, User,} from "firebase/auth";
+import {getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, User,} from "firebase/auth";
 import {doc, getFirestore, setDoc} from "firebase/firestore";
 
 const firebaseConfig = {
@@ -15,7 +15,9 @@ export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
 const googleAuthProvider = new GoogleAuthProvider();
+const gitHubAuthProvider = new GithubAuthProvider();
 
 export async function signInWithGoogle() {
     try {
@@ -25,6 +27,23 @@ export async function signInWithGoogle() {
             uid: user.uid,
             name: user.displayName,
             authProvider: "google",
+            email: user.email,
+            verified: user.emailVerified
+        });
+    } catch (err) {
+        console.error(err);
+        alert(err);
+    }
+}
+
+export async function signInWithGitHub() {
+    try {
+        const authResponse = await signInWithPopup(auth, gitHubAuthProvider);
+        const user = authResponse.user;
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            name: user.displayName,
+            authProvider: "github",
             email: user.email,
             verified: user.emailVerified
         });

@@ -1,6 +1,6 @@
 import {Button, Col, Container, Row} from "reactstrap";
-import {signInWithGoogle} from "../firebase";
-import {Google} from "react-bootstrap-icons";
+import {signInWithGitHub, signInWithGoogle} from "../firebase";
+import {Google, Github} from "react-bootstrap-icons";
 import React from "react";
 
 export function WelcomePage() {
@@ -9,9 +9,15 @@ export function WelcomePage() {
             <Col xs={12}>
                 <h1>Bcc: The Worst Social Media app</h1>
                 <p>Inspired by a broken email auto-responder I recently dealt with.</p>
-                <Button color="info" onClick={signInWithGoogle}>
-                    <Google/> Sign In
-                </Button>
+            </Col>
+        </Row>
+        <h2>Sign in</h2>
+        <Row>
+            <Col md={6}>
+                <Button color="info" block onClick={signInWithGoogle}>Google <Google /></Button>
+            </Col>
+            <Col md={6}>
+                <Button color="info" block onClick={signInWithGitHub}>GitHub <Github /></Button>
             </Col>
         </Row>
         <Row>
