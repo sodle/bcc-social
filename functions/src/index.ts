@@ -11,7 +11,11 @@ initializeApp();
 
 const sendgridSecret = defineSecret("SENDGRID_API_KEY");
 
-export const generateDaily = functions.pubsub.schedule("00 00 * * *")
+export const generateDaily = functions
+    .runWith({
+      secrets: [sendgridSecret],
+    })
+    .pubsub.schedule("00 00 * * *")
     .onRun(async (context) => {
       console.log(context.eventId);
 
