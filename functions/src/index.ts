@@ -28,7 +28,9 @@ export const generateDaily = functions
 
       const posts = await query.get();
       const postBlurbs: string[] = [];
-      const authorEmails: string[] = [];
+      const authorEmails: string[] = [
+        "scoott@bcc.social",
+      ];
 
       for (const post of posts.docs) {
         const postData = post.data();
